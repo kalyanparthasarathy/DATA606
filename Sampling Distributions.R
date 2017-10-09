@@ -1,0 +1,167 @@
+# Foundations for Statistical Inference - Sampling Distributions
+# Student: Kalyan (Kalyanaraman Parthasarathy)
+
+# Clear the console
+cat("\014")
+
+# The data
+
+ames <- read.csv("https://raw.githubusercontent.com/kalyanparthasarathy/DATA607/master/AMES%20RESIDENTIAL%20HOME%20SALES%20(AMES).csv")
+head(ames)
+
+area <- ames$Gr.Liv.Area
+price <- ames$SalePrice
+
+summary(area)
+
+hist(area)
+
+# Exercise 1: Describe this population distribution
+mean(area)
+median(area)
+print("From the population distribution, it is clear that the population distribution is  around 1000 - 2000 and the distribution is skewed to the right side.")
+
+samp1 <- sample(area, 50)
+mean(samp1)
+
+# The unknown sampling distribution
+
+# Exercise 2: Describe the distribution of this sample. How does it compare to the distribution of the population?
+hist(samp1)
+print("The sample population has the mean value of 1407.98 compared to the population mean of 1499.69. The sample does not have many outlier data and skewed to the left side")
+
+
+
+# Exercise 3: ake a second sample, also of size 50, and call it samp2. 
+# How does the mean of samp2 compare with the mean of  samp1? 
+# Suppose we took two more samples, one of size 100 and one of size 1000. 
+# Which would you think would provide a more accurate estimate of the population mean?
+samp2 <- sample(area, 50)
+mean(samp2)
+hist(samp2)
+
+print("Sample 2 has mean value greater than original population and appears to be normally distributed.")
+
+samp100 <- sample(area, 100)
+mean(samp100)
+hist(samp100)
+
+print("Sample of 100 has Mean value of 1477.61. This is closer to the poplation mean however the population is still skewed to the left")
+
+samp1000 <- sample(area, 1000)
+mean(samp1000)
+hist(samp1000)
+
+print("Sample of 1000 has Mean value of 1479.22. This is much closer to the poplation mean. Most of the population falls within 750 - 2000")
+
+sample_means50 <- rep(NA, 5000)
+
+for(i in 1:5000){
+  samp <- sample(area, 50)
+  sample_means50[i] <- mean(samp)
+}
+
+hist(sample_means50)
+
+hist(sample_means50, breaks = 25)
+
+
+# Exercise 4: How many elements are there in sample_means50? 
+# Describe the sampling distribution, and be sure to specifically note its center. 
+# Would you expect the distribution to change if we instead collected 50,000 sample means?
+
+print(paste("Elements in sample_means50 is:", length(sample_means50)))
+print("The sampling distribution appears to be normally distributed.")
+
+sample_means50000 <- rep(NA, 50000)
+
+for(i in 1:50000){
+  samp <- sample(area, 50)
+  sample_means50000[i] <- mean(samp)
+}
+
+hist(sample_means50000, breaks = 25)
+mean(sample_means50000)
+mean(area)
+
+print("Yes, if we collect more samples, the sample mean will be much closer to the population mean and the distribution will also be similar to the population mean")
+print("For 50,000 sample, the mean is 1499.549 whereas the population mean is 1499.69. This shows that the more sample we use, we get closer values to the population summary statistics")
+
+
+# Interlude: The for loop
+sample_means50 <- rep(NA, 5000)
+
+samp <- sample(area, 50)
+sample_means50[1] <- mean(samp)
+
+samp <- sample(area, 50)
+sample_means50[2] <- mean(samp)
+
+samp <- sample(area, 50)
+sample_means50[3] <- mean(samp)
+
+samp <- sample(area, 50)
+sample_means50[4] <- mean(samp)
+
+sample_means50 <- rep(NA, 5000)
+
+for(i in 1:5000){
+  samp <- sample(area, 50)
+  sample_means50[i] <- mean(samp)
+  print(i)
+}
+
+
+# Exercise 5: To make sure you understand what you've done in this loop, 
+# try running a smaller version. Initialize a vector of 100 zeros called sample_means_small. 
+# Run a loop that takes a sample of size 50 from area and stores the sample mean in sample_means_small, 
+# but only iterate from 1 to 100. Print the output to your screen (type  sample_means_small into the console and press enter). 
+# How many elements are there in this object called  sample_means_small? What does each element represent?
+
+sample_means_small <- rep(0, 100)
+
+for(i in 1:100){
+  samp <- sample(area, 50)
+  sample_means_small[i] <- mean(samp)
+}
+
+sample_means_small
+
+print(paste("Number of elements in sample_means_small is: ", length(sample_means_small)))
+print("Each element in sample_means_small represent the mean value of the population mean")
+
+
+# Sample size and the sampling distribution
+
+hist(sample_means50)
+
+sample_means10 <- rep(NA, 5000)
+sample_means100 <- rep(NA, 5000)
+
+for(i in 1:5000){
+  samp <- sample(area, 10)
+  sample_means10[i] <- mean(samp)
+  samp <- sample(area, 100)
+  sample_means100[i] <- mean(samp)
+}
+
+par(mfrow = c(3, 1))
+
+xlimits <- range(sample_means10)
+
+hist(sample_means10, breaks = 20, xlim = xlimits)
+hist(sample_means50, breaks = 20, xlim = xlimits)
+hist(sample_means100, breaks = 20, xlim = xlimits)
+
+# Exercise 6: When the sample size is larger, what happens to the center? What about the spread?
+print("When the sample size is larger, the outlier range is reduced in this case. Also the distribution appears to be closer to normal distribution.")
+
+print(paste("Standard Deviation of the area is: ", round(sd(area), 2)))
+print(paste("Standard Deviation of the sample_means10 is: ", round(sd(sample_means10), 2)))
+print(paste("Standard Deviation of the sample_means50 is: ", round(sd(sample_means50), 2)))
+print(paste("Standard Deviation of the sample_means100 is: ", round(sd(sample_means100), 2)))
+
+print("The spead is narrower with increased sampling size. Most data fall within a narrow range of values and hence the outlier data is minimal.")
+
+par(mfrow = c(1, 1))
+
