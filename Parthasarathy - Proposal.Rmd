@@ -1,0 +1,113 @@
+---
+title: "DATA 606 Data Project Proposal"
+author: "Kalyanaraman Parthasarathy"
+---
+
+### Data Preparation
+
+```{r setup, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+# Clear the console
+cat("\014")
+
+# Check if the package is installed. If not, install the package
+if(!require('fueleconomy')) {
+  install.packages('fueleconomy')
+  library(fueleconomy)
+}
+
+if(!require('psych')) {
+  install.packages('psych')
+  library(psych)
+}
+
+if(!require('ggplot2')) {
+  install.packages('ggplot2')
+  library(ggplot2)
+}
+
+vehiclesDF <- as.data.frame(fueleconomy::vehicles)
+
+head(vehiclesDF)
+
+```
+
+
+### Research question 
+
+**You should phrase your research question in a way that matches up with the scope of inference your dataset allows for.**
+
+*The following research questions will be analyzed*
+
+1. Does the number of cylinders in the vehicle have direct impact to the mileage that the car gives?
+2. For the same transmission and cylinders that the vehicles have, does the mileage vary because of the tranmission type?
+3. Do we see the mileage variance between the manufacturers for the same number of cylinders, displacement and drive type?
+
+
+### Cases 
+
+**What are the cases, and how many are there?**
+
+Each case represents a vehicle type and its specification. There `r nrow(vehiclesDF)` observations in the given data set.
+
+
+### Data collection 
+
+**Describe the method of data collection.**
+
+Data is retrieved from [Hadley Wickham's R Studio Blog] (https://blog.rstudio.com/2014/07/23/new-data-packages/) which is one of the
+approved data sources to get the data from. This data is available in the R package "fueleconomy".
+
+
+### Type of study 
+
+**What type of study is this (observational/experiment)?**
+
+This is an observational study.
+
+
+### Data Source 
+
+**If you collected the data, state self-collected. If not, provide a citation/link.**
+
+Data is collected by Hadley Wickham and is available online here: https://blog.rstudio.com/2014/07/23/new-data-packages/ 
+For this project, data was extracted using the `fueleconomy` R package.
+
+
+
+### Response 
+
+**What is the response variable, and what type is it (numerical/categorical)?**
+
+The response variable is degree of fuel efficiency impact among different vehicle types and is numerical.
+
+
+### Explanatory 
+
+**What is the explanatory variable, and what type is it (numerical/categorival)?**
+
+The explanatory variable is fuel efficiency and is numerical.
+
+
+### Relevant summary statistics 
+
+**Provide summary statistics relevant to your research question. For example, if you're comparing means across groups provide means, SDs, sample sizes of each group. This step requires the use of R, hence a code chunk is provided below. Insert more code chunks as needed.**
+
+```{r}
+
+describe(vehiclesDF$hwy)
+
+describe(vehiclesDF$cty)
+
+table(vehiclesDF$class, useNA='ifany')
+
+describeBy(vehiclesDF$hwy, group = vehiclesDF$class, mat=TRUE)
+
+```
+
+```{r, warning=FALSE, message=FALSE, fig.width=5, fig.height=3}
+ggplot(vehiclesDF, aes(x=vehiclesDF$hwy)) + geom_histogram()
+```
+
+```{r, warning=FALSE, message=FALSE, fig.width=5, fig.height=3}
+ggplot(vehiclesDF, aes(x=vehiclesDF$cty)) + geom_histogram()
+```
